@@ -1,5 +1,5 @@
 ## Ruby on Rails: Una Introducción
-### Universidad Johns Hopkins
+### Universidad John Hopkins
 
 Parte de una serie de 6 cursos, del Programa especializado [Desarrollo Web Ruby on Rails](https://www.coursera.org/specializations/ruby-on-rails)
 
