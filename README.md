@@ -1,5 +1,5 @@
 ## Ruby on Rails
-### Universidad Johns Hopkins
+### Universidad John Hopkins
 
 Repositorio para los cursos del Programa especializado [Desarrollo Web Ruby on Rails](https://www.coursera.org/specializations/ruby-on-rails)
 
