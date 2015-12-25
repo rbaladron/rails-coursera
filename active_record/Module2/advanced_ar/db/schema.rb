@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151225140501) do
+ActiveRecord::Schema.define(version: 20151225140849) do
 
   create_table "hobbies", force: :cascade do |t|
     t.string   "name"
@@ -57,5 +57,15 @@ ActiveRecord::Schema.define(version: 20151225140501) do
   end
 
   add_index "personal_infos", ["person_id"], name: "index_personal_infos_on_person_id"
+
+  create_table "salary_ranges", force: :cascade do |t|
+    t.float    "min_salary"
+    t.float    "max_salary"
+    t.integer  "job_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "salary_ranges", ["job_id"], name: "index_salary_ranges_on_job_id"
 
 end
