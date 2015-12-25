@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  heigth: 1.5
+  weigth: 1.5
+  person_id: 
+
+two:
+  heigth: 1.5
+  weigth: 1.5
+  person_id: 
