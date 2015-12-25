@@ -5,6 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Job.destroy_all
 Person.destroy_all
 
 Person.create! [
@@ -24,3 +25,13 @@ Person.find_by!(first_name: "Josh").create_personal_info(height: 6.5, weight: 23
 Person.find_by!(first_name: "John", last_name: "Smith").create_personal_info(height: 6.0, weight: 210)
 Person.find_by!(first_name: "Bill").create_personal_info(height: 6.1, weight: 199)
 Person.find_by!(first_name: "LeBron").create_personal_info(height: 7.0, weight: 250)
+
+Person.first.jobs.create! [
+  { title: "Developer", company: "MS", position_id: "#1234" },
+  { title: "Developer", company: "MS", position_id: "#1235" }
+]
+
+Person.last.jobs.create! [
+  { title: "Sr. Developer", company: "MS", position_id: "#5234" },
+  { title: "Sr. Developer", company: "MS", position_id: "#5235" }
+]
