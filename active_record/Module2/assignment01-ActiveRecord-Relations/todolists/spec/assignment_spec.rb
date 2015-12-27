@@ -178,12 +178,6 @@ describe "Assignment" do
       end         
     end
 
-    context "rq07" do
-      context "Database migration completed" do
-        #TBD
-      end
-    end
-
     context "rq08" do # Re-use and update 'TodoItem' model and database table
       it "User has a 1:many relationship with TodoItem" do
         expect(User.reflect_on_association(:todo_items).macro).to eq :has_many
@@ -371,7 +365,7 @@ describe "Assignment" do
             end
             todoItem = TodoItem.create(:completed=>cval, :due_date=>Date.today, :title=>"My List 2 Item #{i}", :description=>"Item Details #{i}", :todo_list_id=>tdlist2.id)
           end
-          expect(user.get_completed_count(user)).to be(completeCount)
+          expect(user.get_completed_count).to eq completeCount
         end
       end
 
