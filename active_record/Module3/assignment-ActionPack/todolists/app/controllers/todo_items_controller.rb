@@ -5,6 +5,7 @@ class TodoItemsController < ApplicationController
   # GET /todo_items.json
   def index
     @todo_items = TodoItem.all
+    @number_of_completed_todos = TodoItem.number_of_completed_todos
   end
 
   # GET /todo_items/1
@@ -28,7 +29,8 @@ class TodoItemsController < ApplicationController
 
     respond_to do |format|
       if @todo_item.save
-        format.html { redirect_to @todo_item, notice: 'Todo item was successfully created.' }
+        #format.html { redirect_to @todo_item, notice: 'Todo item was successfully created.' }
+        format.html { redirect_to todo_items_url, notice: 'Todo item was successfully created.' }
         format.json { render :show, status: :created, location: @todo_item }
       else
         format.html { render :new }

@@ -21,12 +21,15 @@
         <td><%= todo_item.description %></td>
         <td><%= todo_item.completed %></td>
         <td><%= link_to 'Show', todo_item %></td>
-        <td><%= link_to 'Edit', edit_todo_item_path(todo_item) %></td>
         <td><%= link_to 'Destroy', todo_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<br>
+
+<%= "Number of Completed Todos: #{@number_of_completed_todos}" %>
 
 <br>
 
