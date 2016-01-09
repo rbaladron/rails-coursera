@@ -8,8 +8,8 @@ class SessionsController < ApplicationController
     password = params[:reviewer][:password]
 
     if reviewer && reviewer.authenticate(password)
-      session[:reviewer:id] = reviewer.id
-      redirect_to rooth_path, notice: "Logged in succesfully"
+      session[:reviewer_id] = reviewer.id
+      redirect_to root_path, notice: "Logged in succesfully"
     else
       redirect_to login_path, alert: "Invalid username/password combination"
     end
