@@ -17,11 +17,11 @@ class NotesController < ApplicationController
   end
 
   private
-    def set book
+    def set_book
       @book = Book.find(params[:book_id])
     end
 
     def note_params
-      params.require(:note).permi(:title, :note)
+      params.require(:note).permit(:title, :note)
     end
 end
