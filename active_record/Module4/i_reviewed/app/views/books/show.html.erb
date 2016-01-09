@@ -8,18 +8,19 @@
 </div>
 
 <div>
-  <%= form_for([book, @book.notes.new]) do |f| %>
+  <%= form_for([@book, @book.notes.new]) do |f| %>
     <div class="field">
-      <%= f.lable :title %>
+      <%= f.label :title %>
       <%= f.text_field :title%>
     </div>
     <div class="note">
-      <%= f.lable :note %>
+      <%= f.label :note %>
       <%= f.text_area :note, size: "25x5"%>
     </div>
     <div class="actions">
       <%= f.submit "Add New Note" %>
     </div>
+  <% end%>
 </div>
 
 <%= link_to 'Back', books_path %>
