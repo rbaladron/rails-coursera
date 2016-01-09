@@ -8,10 +8,10 @@
 </head>
 <body>
 
-<%= if logged_in? %>
+<% if logged_in? %>
   <div style="float: rigth;">
     Logged in as <%= current_user.name %>
-    <%= lint_to "Logout", logout_path, method: :delete %>
+    <%= link_to "Logout", logout_path, method: :delete %>
   </div>
 <% end %>
 
