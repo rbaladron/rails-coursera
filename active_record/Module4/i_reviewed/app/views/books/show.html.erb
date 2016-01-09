@@ -1,14 +1,6 @@
-<p id="notice"><%= notice %></p>
+<div class="book">
+  <%= content_tag :span, "#{@book.name} (#{@book.author})", class: "book-title" %>
+  <%= link_to 'Edit', edit_book_path(@book) %> |
+</div>
 
-<p>
-  <strong>Name:</strong>
-  <%= @book.name %>
-</p>
-
-<p>
-  <strong>Author:</strong>
-  <%= @book.author %>
-</p>
-
-<%= link_to 'Edit', edit_book_path(@book) %> |
 <%= link_to 'Back', books_path %>
