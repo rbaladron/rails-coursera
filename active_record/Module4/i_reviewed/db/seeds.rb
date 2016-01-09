@@ -15,7 +15,7 @@ eloquent.notes.create! [
 ]
 
 reviewers = Reviewer.create! [
-  { name: "Joe", password: "abc123"};
+  { name: "Joe", password: "abc123"},
   { name: "Jim", password: "123abc"}
 ]
 
