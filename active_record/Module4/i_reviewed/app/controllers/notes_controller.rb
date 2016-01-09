@@ -2,7 +2,7 @@ class NotesController < ApplicationController
   before_action :set_book, only: [:create, :destroy]
 
   def create
-    @note = @book.netos.new(note_params)
+    @note = @book.notes.new(note_params)
     if @note.save
       redirecto_to @book, notice: "Note succesfully added!"
     else
