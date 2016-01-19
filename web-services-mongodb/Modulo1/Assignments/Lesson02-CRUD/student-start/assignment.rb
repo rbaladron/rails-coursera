@@ -15,7 +15,7 @@ class Solution
   # using the default.
   def self.mongo_client
     url=ENV['MONGO_URL'] ||= MONGO_URL
-    database=ENV['MONGO_DATABASE'] ||= MONGO_DATABASE 
+    database=ENV['MONGO_DATABASE'] ||= MONGO_DATABASE
     db = Mongo::Client.new(url)
     @@db=db.use(database)
   end
@@ -26,9 +26,9 @@ class Solution
     collection=ENV['RACE_COLLECTION'] ||= RACE_COLLECTION
     return mongo_client[collection]
   end
-  
+
   # helper method that will load a file and return a parsed JSON document as a hash
-  def self.load_hash(file_path) 
+  def self.load_hash(file_path)
     file=File.read(file_path)
     JSON.parse(file)
   end
@@ -43,15 +43,16 @@ class Solution
   #
 
   def clear_collection
-    #place solution here
+    @coll.delete_many({})
   end
 
-  def load_collection(file_path) 
-    #place solution here
+  def load_collection(file_path)
+    hash=self.class.load_hash(file_path)
+    @coll.insert_many(hash)
   end
 
   def insert(race_result)
-    #place solution here
+    @coll.insert_one(race_result)
   end
 
   #
@@ -59,43 +60,48 @@ class Solution
   #
 
   def all(prototype={})
-    #place solution here
+    @coll.find(prototype)
   end
 
   def find_by_name(fname, lname)
-    #place solution here
+      @coll.find(first_name: fname, last_name: lname).projection(first_name:1, last_name:1, number:1, _id:0)
   end
 
   #
   # Lecture 3: Paging
   #
 
-  def find_group_results(group, offset, limit) 
-    #place solution here
+  def find_group_results(group, offset, limit)
+    @coll.find(group:group)
+         .projection(group:0, _id:0)
+         .sort(secs:1).skip(offset).limit(limit)
   end
 
   #
   # Lecture 4: Find By Criteria
   #
 
-  def find_between(min, max) 
-    #place solution here
+  def find_between(min, max)
+    @coll.find(secs: {:$gt=>min, :$lt=>max} )
   end
 
-  def find_by_letter(letter, offset, limit) 
-    #place solution here
+  def find_by_letter(letter, offset, limit)
+    @coll.find(last_name: {:$regex=>"^#{letter.upcase}.+"})
+         .sort(last_name:1)
+         .skip(offset)
+         .limit(limit)
   end
 
   #
   # Lecture 5: Updates
   #
-  
+
   def update_racer(racer)
-    #place solution here
+    @coll.find(_id: racer[:_id]).replace_one(racer)
   end
 
   def add_time(number, secs)
-    #place solution here
+    @coll.find(number: number).update_one(:$inc => {:secs => secs})
   end
 
 end
