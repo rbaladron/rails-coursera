@@ -7,7 +7,9 @@ class ZipsController < ApplicationController
     #@zips = Zip.all
     #@zips = Zip.paginate(params)
 
+    # update a clone of params
     args=params.clone
+    #replace sort with hash
     args[:sort]=get_sort_has(args[:sort])
     @zips = Zip.paginate(args)
   end

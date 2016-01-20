@@ -1,4 +1,15 @@
 class Zip
+  include ActiveModel::Model
+
+  def persisted?
+    !@id.nil?
+  end
+  def created_at
+    nil
+  end
+  def updated_at
+    nil
+  end
 
   # convenience method for access to client in console
   def self.mongo_client
