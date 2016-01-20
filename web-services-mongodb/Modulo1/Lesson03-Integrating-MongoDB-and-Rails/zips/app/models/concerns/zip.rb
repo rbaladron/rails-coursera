@@ -9,7 +9,6 @@ class Zip
   def self.collection
     self.mongo_client['zips']
   end
-end
 
 # implement a find that returns a collection of document as hashes.
 # Use initializae(hash) to express individual documents as a class
@@ -60,3 +59,13 @@ def self.all(prototype{}, sort={:population=>1}, offset=0, limit=100)
               .find(_:id:@id)
               .update_one(updates)
   end
+
+  # remove the document associated with this instance from the DB
+  def destroy
+    Rails.logger.debug{"destroying #{self}"}
+
+    self.class.collection
+              .find(_id:@id)
+              .delete_one
+  end
+end
