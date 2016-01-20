@@ -28,3 +28,22 @@ def self.all(prototype{}, sort={:population=>1}, offset=0, limit=100)
   sort=tmp
   # convert to keys and then eliminate any properties no of interest
   prototype.each_with_object({}) {|(k,v), tmp | tmp[k.to_sym] = v; tmp}
+
+  # locate  a specific document. Use initialize(hash) on the result to
+  # get in class instance form
+  def self.find id
+    Rails.logger.debug{"getting zip #{id}"}
+
+    doc=collection.find(:_id=>id)
+                  .projection({_id:true, citi:true, state:true, pop:true})
+                  .first
+    return doc.nil? ? nil : Zip.new(doc)
+  end
+
+  # Create a new document using the current instance
+  def save
+    Rails.loger.debug {"saving #{self}"}
+
+    self.class.collection
+              .insert_one(_id:@id, city:@city, state:@state, pop:@population)
+  end
