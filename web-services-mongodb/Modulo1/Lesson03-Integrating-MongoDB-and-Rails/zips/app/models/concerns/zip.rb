@@ -13,7 +13,7 @@ class Zip
 
   # convenience method for access to client in console
   def self.mongo_client
-    Mongoid::Clients.Default
+    Mongoid::Clients.default
   end
 
   # convenience method for access to zips collection
@@ -31,13 +31,25 @@ class Zip
 def self.all(prototype{}, sort={:population=>1}, offset=0, limit=100)
   # map internal :population term to :pop document term
   tmp = {} # hash needs to stay in stable order provided
-  sort.each {|k,v
+  sort.each {|k,v|
     k = k.to_sym==:population ? :pop : k.to_sym
     tmp[k] = v if [:city, :state, :pop].include?(k)
   }
   sort=tmp
   # convert to keys and then eliminate any properties no of interest
-  prototype.each_with_object({}) {|(k,v), tmp | tmp[k.to_sym] = v; tmp}
+  prototype=prototype.symboliz_keys.slice(:cit, :state) if !prototype.nil?
+
+
+  Rails.logger.debug{"getting all zips, prototype=#{prototype}, sort=#{sort}, offset=#{offset}, limit=#{limit}"}
+
+  result = collection.find(prototype)
+                      .projection({_id:true, city:true, state:true, pop:true})
+                      .sort(sort)
+                      .skip(offset)
+  result=result.limit(limit) if !limit.nil?
+
+  return result
+end
 
   # locate  a specific document. Use initialize(hash) on the result to
   # get in class instance form
@@ -78,5 +90,25 @@ def self.all(prototype{}, sort={:population=>1}, offset=0, limit=100)
     self.class.collection
               .find(_id:@id)
               .delete_one
+  end
+
+  def self.paginate(params)
+    Rails.logger.debug("paginate(#{params})")
+    page=(params[:page] ||=1).to_i
+    limit=(params[:per_page] ||= 30).to_i
+    offset=(page-1)*limit
+
+    # get the associated page of Zips -- eagerly conver doc to Zip
+    zips=[]
+    all({}, {}, offset, limit).each do |doc|
+      zips << Zip.new(doc)
+    end
+
+    # get a count of all documents in the collection
+    total = all({}, {}, 0, 1).count
+
+    WillPaginate::Collection.create(page, limit, total) do |pager|
+      pager.replace(zips)
+    end
   end
 end
