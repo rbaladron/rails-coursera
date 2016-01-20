@@ -42,8 +42,21 @@ def self.all(prototype{}, sort={:population=>1}, offset=0, limit=100)
 
   # Create a new document using the current instance
   def save
-    Rails.loger.debug {"saving #{self}"}
+    Rails.logger.debug {"saving #{self}"}
 
     self.class.collection
               .insert_one(_id:@id, city:@city, state:@state, pop:@population)
+  end
+
+  # udate the values for this instance
+  def update(updates)
+    Rails.logger.debug {"updating #{self} with #{updates}"}
+
+    # map internal :population term to :pop document term
+    updates[:pop]=updates[:population] if !updates[:population].nil?
+    updates.slice!(:city, :state, :pop) if !updates.nil?
+
+    self.class.collection
+              .find(_:id:@id)
+              .update_one(updates)
   end
