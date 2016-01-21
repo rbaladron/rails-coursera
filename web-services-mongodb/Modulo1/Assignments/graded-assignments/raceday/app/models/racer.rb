@@ -19,6 +19,20 @@ class Racer
     @secs=params[:secs].to_i
   end
 
+  # tell Rails whether this instance is persisted
+  def persisted?
+    !@id.nil?
+  end
+
+  def created_at
+    nil
+  end
+  
+  def updated_at
+    nil
+  end
+
+
   # convenience method for access to client in console
   def self.mongo_client
    Mongoid::Clients.default
@@ -69,5 +83,37 @@ class Racer
                   .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
                   .first
     return doc.nil? ? nil : Racer.new(doc)
+
   end
+
+  # create a new document using the current instance
+  def save
+    Rails.logger.debug {"saving #{self}"}
+
+    self.class.collection
+              .insert_one(_id:@id, number:@number, first_name:@first_name, last_name:@last_name, gender:@gender, group:@group, secs:@sec)
+  end
+
+  # update the values for this instance
+  def update(updates)
+    Rails.logger.debug {"updating #{self} with #{updates}"}
+
+    #map internal :population term to :pop document term
+    updates[:num]=updates[:number]  if !updates[:number].nil?
+    params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !updates.nil?
+
+    self.class.collection
+              .find(_id:@id)
+              .update_one(:$set=>updates)
+  end
+
+  # remove the document associated with this instance form the DB
+  def destroy
+    Rails.logger.debug {"destroying #{self}"}
+
+    self.class.collection
+              .find(_id:@id)
+              .delete_one
+  end
+
 end
