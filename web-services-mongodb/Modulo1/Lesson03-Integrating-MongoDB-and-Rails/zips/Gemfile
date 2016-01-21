@@ -44,6 +44,11 @@ group :development, :test do
   gem 'spring'
 end
 
+group :test do
+    gem 'rspec-rails', '~> 3.0'
+    gem 'capybara'
+end
+
 group :production do
   #use postgres on heroku
   gem 'pg'
