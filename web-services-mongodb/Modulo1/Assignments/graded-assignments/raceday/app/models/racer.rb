@@ -4,7 +4,7 @@ class Racer
   attr_accessor :id, :number, :first_name, :last_name, :gender, :group, :secs
 
   def to_s
-    "#{@id}: #{@number}, #{@first_name}, #{@last_name}, #{@gender}, #{@group}"
+    "#{@id}: #{@number}, #{@first_name}, #{@last_name}, #{@gender}, #{@group}, #{@secs}"
   end
 
   # initialize from both a Mongo and Web hash
@@ -40,7 +40,7 @@ class Racer
 
   # convenience method for access to racers collection
   def self.collection
-   self.mongo_client[:racers]
+   self.mongo_client['racers']
   end
 
   # implement a find that returns a collection of document as hashes.
@@ -60,7 +60,7 @@ class Racer
     sort=tmp
 
     #convert to keys and then eliminate any properties not of interest
-    #prototype=prototype.symbolize_keys.slice(:group :gender, :last_name,) if !prototype.nil?
+    #prototype=prototype.symbolize_keys.slice(:gender, :last_name,) if !prototype.nil?
 
     Rails.logger.debug {"getting all racers, prototype=#{prototype}, sort=#{sort}, offset=#{offset}, limit=#{limit}"}
 
@@ -79,41 +79,27 @@ class Racer
   def self.find id
     Rails.logger.debug {"getting racer #{id}"}
 
-    doc=collection.find(:_id=>id).first
-                  .projection({_id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true})
+    doc=collection.find(:_id=>id)
+                  .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
                   .first
     return doc.nil? ? nil : Racer.new(doc)
 
   end
 
-
   # create a new document using the current instance
-  #def save
-  #  Rails.logger.debug {"saving #{self}"}
-
-  #  self.class.collection
-  #            .insert_one(_id:@id, number:@number, first_name:@first_name, last_name:@last_name, gender:@gender, group:@group, secs:@sec)
-  #end
-
   def save
     Rails.logger.debug {"saving #{self}"}
 
     self.class.collection
-                .insert_one(_id:@id,  number:@number, first_name:@first_name, last_name:@last_name, gender:@gender, group:@group, secs:@sec)
-
-
-
-    #return result.nil? ? nil : Racer.new(result)
-
+              .insert_one(_id:@id, number:@number, first_name:@first_name, last_name:@last_name, gender:@gender, group:@group, secs:@sec)
   end
 
-
   # update the values for this instance
-  def update(params)
+  def update(updates)
     Rails.logger.debug {"updating #{self} with #{updates}"}
 
     #map internal :population term to :pop document term
-    params[:num]=updates[:number]  if !params[:number].nil?
+    updates[:num]=updates[:number]  if !updates[:number].nil?
     params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !updates.nil?
 
     self.class.collection
