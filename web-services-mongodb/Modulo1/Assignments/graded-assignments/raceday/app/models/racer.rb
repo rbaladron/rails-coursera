@@ -89,8 +89,15 @@ class Racer
   def save
     Rails.logger.debug {"saving #{self}"}
 
-    self.class.collection
-              .insert_one(_id:@id, number:@number, first_name:@first_name, last_name:@last_name, gender:@gender, group:@group, secs:@sec)
+    doc=self.class.collection
+              .insert_one( _id:@id,
+                          number:@number,
+                          first_name:@first_name,
+                          last_name:@last_name,
+                          gender:@gender,
+                          group:@group,
+                          secs:@sec)
+    @id=doc[:_id].to_s
   end
 
   # update the values for this instance
