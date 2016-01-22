@@ -88,6 +88,7 @@ class Racer
   # create a new document using the current instance
   def save
     Rails.logger.debug {"saving #{self.to_s}"}
+    #Rails.logger.debug {"saving racer num=#{@number}, first_name=#{@first_name}, last_name=#{@last_name}, gender=#{@gender}, group=#{@group}, secs=#{@secs}"}
 
     result=self.class.collection
               .insert_one( _id:@id,
@@ -97,7 +98,8 @@ class Racer
                           gender:@gender,
                           group:@group,
                           secs:@secs)
-    @id=result[:_id].to_s
+    #@id=result[:_id].to_s
+    @id=result.inserted_id.to_s
 
   end
 
