@@ -40,7 +40,7 @@ class Racer
 
   # convenience method for access to racers collection
   def self.collection
-   self.mongo_client['racers']
+   return self.mongo_client[:racers]
   end
 
   # implement a find that returns a collection of document as hashes.
@@ -74,6 +74,7 @@ class Racer
 
   end
 
+
   # locate a specific document. Use initialize(hash) on the result to
   # get in class instance form
 
@@ -81,7 +82,13 @@ class Racer
     Rails.logger.debug {"getting racer #{id}"}
 
     bsonConverter = BSON.ObjectId(id)
-    result=self.collection.find({:_id=> bsonConverter}).first
+    result=self.collection.find({:_id=> bsonConverter})
+                          .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
+                          .first
+    #result=collection.find(:_id=>id)
+    #              .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
+    #              .first
+
     return result.nil? ? nil : Racer.new(result)
   end
 
@@ -104,8 +111,9 @@ class Racer
   end
 
   # update the values for this instance
+
   def update(params)
-    #Rails.logger.debug {"updating with #{params}"}
+    Rails.logger.debug {"updating with #{self}"}
 
     @number=params[:number].to_i
     @first_name=params[:first_name]
@@ -114,6 +122,8 @@ class Racer
     @group=params[:group]
     @secs=params[:secs].to_i
 
+    #map internal :population term to :pop document term
+    #params[:number]=params[:num]  if !params[:num].nil?
     params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !params.nil?
 
     self.class.collection
