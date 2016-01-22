@@ -132,6 +132,37 @@ class Racer
 
   end
 
+  #implememts the will_paginate paginate method that accepts
+  # page - number >= 1 expressing offset in pages
+  # per_page - row limit within a single page
+  # also take in some custom parameters like
+  # sort - order criteria for document
+  # (terms) - used as a prototype for selection
+  # This method uses the all() method as its implementation
+  # and returns instantiated Zip classes within a will_paginate
+  # page
+  def self.paginate(params)
+    Rails.logger.debug("paginate(#{params})")
+
+    page=(params[:page] ||= 1).to_i
+    limit=(params[:per_page] ||= 30).to_i
+    offset=(page-1)*limit
+    sort=params[:sort] ||= {}
+
+    #get the associated page of Zips -- eagerly convert doc to Zip
+    racers=[]
+    all(params, sort, offset, limit).each do |doc|
+      racers << Racer.new(doc)
+    end
+
+    #get a count of all documents in the collection
+    total=all(params, sort, 0, 1).count
+
+    WillPaginate::Collection.create(page, limit, total) do |pager|
+      pager.replace(racers)
+    end
+  end
+
   # remove the document associated with this instance form the DB
   def destroy
     Rails.logger.debug {"destroying #{self}"}
