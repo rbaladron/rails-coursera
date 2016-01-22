@@ -60,7 +60,7 @@ class Racer
     sort=tmp
 
     #convert to keys and then eliminate any properties not of interest
-    #prototype=prototype.symbolize_keys.slice(:gender, :last_name,) if !prototype.nil?
+    prototype=prototype.symbolize_keys.slice(:number, :first_name, :last_name, :gender, :group, :secs) if !prototype.nil?
 
     Rails.logger.debug {"getting all racers, prototype=#{prototype}, sort=#{sort}, offset=#{offset}, limit=#{limit}"}
 
@@ -76,14 +76,13 @@ class Racer
 
   # locate a specific document. Use initialize(hash) on the result to
   # get in class instance form
+
   def self.find id
     Rails.logger.debug {"getting racer #{id}"}
 
-    doc=collection.find(:_id=>id)
-                  .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
-                  .first
-    return doc.nil? ? nil : Racer.new(doc)
-
+    bsonConverter = BSON.ObjectId(id)
+    result=self.collection.find({:_id=> bsonConverter}).first
+    return result.nil? ? nil : Racer.new(result)
   end
 
   # create a new document using the current instance
@@ -95,16 +94,16 @@ class Racer
   end
 
   # update the values for this instance
-  def update(updates)
+  def update(params)
     Rails.logger.debug {"updating #{self} with #{updates}"}
 
     #map internal :population term to :pop document term
-    updates[:num]=updates[:number]  if !updates[:number].nil?
+    params[:num]=params[:number]  if !params[:number].nil?
     params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !updates.nil?
 
     self.class.collection
               .find(_id:@id)
-              .update_one(:$set=>updates)
+              .update_one(:$set=>params)
   end
 
   # remove the document associated with this instance form the DB
