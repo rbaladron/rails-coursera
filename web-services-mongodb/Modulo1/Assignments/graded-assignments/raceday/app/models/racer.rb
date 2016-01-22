@@ -4,7 +4,7 @@ class Racer
   attr_accessor :id, :number, :first_name, :last_name, :gender, :group, :secs
 
   def to_s
-    "#{@id}: #{@number}, #{@first_name}, #{@last_name}, #{@gender}, #{@group}, #{@secs}"
+    "#{@id}: num=#{@number}, first_name=#{@first_name}, last_name=#{@last_name}, gender=#{@gender}, group=#{@group}, secs=#{@secs}"
   end
 
   # initialize from both a Mongo and Web hash
@@ -87,17 +87,18 @@ class Racer
 
   # create a new document using the current instance
   def save
-    Rails.logger.debug {"saving #{self}"}
+    Rails.logger.debug {"saving #{self.to_s}"}
 
-    doc=self.class.collection
+    result=self.class.collection
               .insert_one( _id:@id,
                           number:@number,
                           first_name:@first_name,
                           last_name:@last_name,
                           gender:@gender,
                           group:@group,
-                          secs:@sec)
-    @id=doc[:_id].to_s
+                          secs:@secs)
+    @id=result[:_id].to_s
+
   end
 
   # update the values for this instance
