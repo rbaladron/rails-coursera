@@ -105,15 +105,21 @@ class Racer
 
   # update the values for this instance
   def update(params)
-    Rails.logger.debug {"updating #{self} with #{updates}"}
+    #Rails.logger.debug {"updating with #{params}"}
 
-    #map internal :population term to :pop document term
-    params[:num]=params[:number]  if !params[:number].nil?
-    params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !updates.nil?
+    @number=params[:number].to_i
+    @first_name=params[:first_name]
+    @last_name=params[:last_name]
+    @gender=params[:gender]
+    @group=params[:group]
+    @secs=params[:secs].to_i
+
+    params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !params.nil?
 
     self.class.collection
               .find(_id:@id)
               .update_one(:$set=>params)
+
   end
 
   # remove the document associated with this instance form the DB
