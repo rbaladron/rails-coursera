@@ -27,7 +27,7 @@ class Racer
   def created_at
     nil
   end
-  
+
   def updated_at
     nil
   end
@@ -79,12 +79,13 @@ class Racer
   def self.find id
     Rails.logger.debug {"getting racer #{id}"}
 
-    doc=collection.find(:_id=>id)
+    result=collection.find(:_id=>id)
                   .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
                   .first
-    return doc.nil? ? nil : Racer.new(doc)
+    return result.nil? ? nil : Racer.new(result)
 
   end
+
 
   # create a new document using the current instance
   def save
