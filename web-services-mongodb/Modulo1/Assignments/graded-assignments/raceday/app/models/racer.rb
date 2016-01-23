@@ -24,6 +24,7 @@ class Racer
     !@id.nil?
   end
 
+  # Placeholders for property getters
   def created_at
     nil
   end
@@ -51,7 +52,7 @@ class Racer
   #   * offset - document to start results
   #   * limit - number of documents to include
   def self.all(prototype={}, sort={:num=>1}, offset=0, limit=nil)
-    #map internal :population term to :pop document term
+    #map internal :num term to :number document term
     tmp = {} #hash needs to stay in stable order provided
     sort.each {|k,v|
       k = k.to_sym==:num ? :number : k.to_sym
@@ -77,7 +78,6 @@ class Racer
 
   # locate a specific document. Use initialize(hash) on the result to
   # get in class instance form
-
   def self.find id
     Rails.logger.debug {"getting racer #{id}"}
 
@@ -85,9 +85,6 @@ class Racer
     result=self.collection.find({:_id=> bsonConverter})
                           .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
                           .first
-    #result=collection.find(:_id=>id)
-    #              .projection({id:true, number:true, first_name:true, last_name:true, gender:true, group:true, secs:true })
-    #              .first
 
     return result.nil? ? nil : Racer.new(result)
   end
@@ -122,24 +119,20 @@ class Racer
     @group=params[:group]
     @secs=params[:secs].to_i
 
-    #map internal :population term to :pop document term
-    #params[:number]=params[:num]  if !params[:num].nil?
     params.slice!(:number, :first_name, :last_name, :gender, :group, :secs) if !params.nil?
-
-    self.class.collection
-              .find(_id:@id)
-              .update_one(:$set=>params)
-
+      self.class.collection
+                .find(:_id=>BSON::ObjectId.from_string(@id))
+                .replace_one(params)
   end
 
   #implememts the will_paginate paginate method that accepts
-  # page - number >= 1 expressing offset in pages
-  # per_page - row limit within a single page
+  #   page - number >= 1 expressing offset in pages
+  #   per_page - row limit within a single page
   # also take in some custom parameters like
-  # sort - order criteria for document
-  # (terms) - used as a prototype for selection
+  #   sort - order criteria for document
+  #   (terms) - used as a prototype for selection
   # This method uses the all() method as its implementation
-  # and returns instantiated Zip classes within a will_paginate
+  # and returns instantiated Racer classes within a will_paginate
   # page
   def self.paginate(params)
     Rails.logger.debug("paginate(#{params})")
@@ -149,7 +142,7 @@ class Racer
     offset=(page-1)*limit
     sort=params[:sort] ||= {}
 
-    #get the associated page of Zips -- eagerly convert doc to Zip
+    #get the associated page of Racers -- eagerly convert doc to Racer
     racers=[]
     all(params, sort, offset, limit).each do |doc|
       racers << Racer.new(doc)
@@ -168,7 +161,7 @@ class Racer
     Rails.logger.debug {"destroying #{self}"}
 
     self.class.collection
-              .find(_id:@id)
+              .find(:_id=>BSON::ObjectId.from_string(@id))
               .delete_one
   end
 
