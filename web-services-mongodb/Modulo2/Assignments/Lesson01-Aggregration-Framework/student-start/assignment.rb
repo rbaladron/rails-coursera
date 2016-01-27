@@ -123,15 +123,30 @@ class Solution
   # Lecture 4: $match
   #
   def groups_faster_than criteria_time
-    @coll.find.aggregate([ {:$group=>{:_id=>{:age=>"$group", :gender=>"$gender"}, runners:{:$sum=>1}, fastest_time:{:$min=>"$secs"}}},
-                           {:$match=>{:fastest_time=>{:$lte=>criteria_time}}}])
+    @coll.find.aggregate([
+      {:$group=>{
+        :_id=>{
+          :age=>"$group",
+          :gender=>"$gender"},
+          runners:{:$sum=>1},
+          fastest_time:{:$min=>"$secs"}}},
+                           {:$match=>{:fastest_time=>{:$lte=>criteria_time}}
+                         }
+   ])
   end
 
   def age_groups_faster_than age_group, criteria_time
-    @coll.find.aggregate([ {:$match=>{:group=>age_group}},
-                           {:$group=>{:_id=>{:age=>"$group", :gender=>"$gender"}, runners:{:$sum=>1}, fastest_time:{:$min=>"$secs"}}},
-                           {:$match=>{:fastest_time=>{:$lte=>criteria_time}}}
-                         ])
+    @coll.find.aggregate([ {
+      :$match=>{
+        :group=>age_group}},
+                           {:$group=>{
+                             :_id=>{:age=>"$group",
+                               :gender=>"$gender"},
+                               runners:{:$sum=>1},
+                               fastest_time:{:$min=>"$secs"}}},
+                           {:$match=>{:fastest_time=>{:$lte=>criteria_time}}
+                         }
+    ])
   end
 
 
@@ -139,16 +154,30 @@ class Solution
   # Lecture 5: $unwind
   #
   def avg_family_time last_name
-    @coll.find.aggregate([ {:$match=>{:last_name=>"JONES"}},
-                           {:$group=>{:_id=>"$last_name", avg_time:{:$avg=>"$secs"}, numbers:{:$push=>"$number"}}}])
+    @coll.find.aggregate([ {
+      :$match=>{
+        :last_name=>"JONES"}},
+                           {:$group=>{
+                             :_id=>"$last_name",
+                             avg_time:{:$avg=>"$secs"},
+                             numbers:{:$push=>"$number"}}}
+   ])
   end
 
   def number_goal last_name
-    @coll.find.aggregate([ {:$match=>{:last_name=>"JONES"}},
-                           {:$group=>{:_id=>"$last_name", avg_time:{:$avg=>"$secs"}, numbers:{:$push=>"$number"}}},
+    @coll.find.aggregate([ {
+      :$match=>{:last_name=>"JONES"}},
+                           {:$group=>{
+                             :_id=>"$last_name",
+                             avg_time:{:$avg=>"$secs"},
+                             numbers:{:$push=>"$number"}}},
                            {:$unwind=>"$numbers"},
-                           {:$project=>{_id:0, :number=>"$numbers", avg_time:1, last_name:"$_id"}}
-                            ])
+                           {:$project=>{
+                             _id:0,
+                             :number=>"$numbers",
+                             avg_time:1,
+                             last_name:"$_id"}}
+   ])
   end
 
 end
