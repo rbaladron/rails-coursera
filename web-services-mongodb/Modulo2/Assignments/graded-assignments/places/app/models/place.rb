@@ -40,6 +40,7 @@ class Place
   def self.find_by_short_name(input_string)
     Place.collection.find({"address_components.short_name": input_string})
   end
+
   # accept a Mongo::Collection::View and return a
   # collection of Place instances.
   def self.to_places input_mongo
@@ -50,8 +51,9 @@ class Place
     return p
   end
 
-  def self.find s
-    _id = BSON::ObjectId.from_string(s)
+  # return an instance of Place for a supplied id
+  def self.find input_id
+    _id = BSON::ObjectId.from_string(input_id)
     p = collection.find(:_id => _id).first
     if !p.nil?
       Place.new(p)
@@ -60,6 +62,7 @@ class Place
     end
   end
 
+  # return an instance of all documents as Place instances.
   def self.all(offset=0, limit=nil)
     if !limit.nil?
       docs = collection.find.skip(offset).limit(limit)
