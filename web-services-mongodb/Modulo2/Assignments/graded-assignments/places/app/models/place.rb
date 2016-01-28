@@ -136,19 +136,34 @@ class Place
     end
   end
 
+  # returns a distinct collection of country names (long_names)
   def self.get_country_names
     Place.collection.aggregate([
       {:$unwind => '$address_components'},
-      {:$project=>{ :_id=>0, :address_components=> {:long_name => 1, :types => 1} }},
-      {:$match => {'address_components.types': "country"  }}, {:$group=>{ :_id=>'$address_components.long_name', :count=>{:$sum=>1}}}
+      {:$project=>{
+        :_id=>0,
+        :address_components=> {
+          :long_name => 1,
+          :types => 1} }},
+      {:$match => {'address_components.types': "country"  }},
+      {:$group=>{
+        :_id=>'$address_components.long_name',
+        :count=>{:$sum=>1}}}
     ]).to_a.map {|h| h[:_id]}
   end
 
-  def self.find_ids_by_country_code(s)
+  # return the id of each document in
+  # the places collection that has an address_component.short_name of type
+  # country and matches the provided parameter.
+  def self.find_ids_by_country_code(input_country)
     Place.collection.aggregate([
       {:$unwind => '$address_components'},
-      {:$project=>{ :_id=>1, :address_components=> {:short_name => 1, :types => 1} }},
-      {:$match => {'address_components.short_name': s}}
+      {:$project=>{
+        :_id=>1,
+        :address_components=> {
+        :short_name => 1,
+        :types => 1} }},
+      {:$match => {'address_components.short_name': input_country}}
     ]).map {|h| h[:_id].to_s}
   end
 
