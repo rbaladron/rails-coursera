@@ -81,31 +81,54 @@ class Place
     self.class.collection.find(:_id => BSON::ObjectId.from_string(@id)).delete_one
   end
 
+  # returns a collection of hash documents with
+  # address_components and their associated _id, formatted_address and
+  # location properties
   def self.get_address_components(sort=nil, offset=0, limit=nil)
     if sort.nil? and limit.nil?
       Place.collection.aggregate([
         {:$unwind => '$address_components'},
-        {:$project => { :_id=>1, :address_components=>1, :formatted_address=>1, :geometry => {:geolocation => 1}}},
+        {:$project => {
+          :_id=>1,
+          :address_components=>1,
+          :formatted_address=>1,
+          :geometry => {
+            :geolocation => 1}}},
         {:$skip => offset}
       ])
     elsif sort.nil? and !limit.nil?
       Place.collection.aggregate([
         {:$unwind => '$address_components'},
-        {:$project => { :_id=>1, :address_components=>1, :formatted_address=>1, :geometry => {:geolocation => 1}}},
+        {:$project => {
+          :_id=>1,
+          :address_components=>1,
+          :formatted_address=>1,
+          :geometry => {
+            :geolocation => 1}}},
         {:$skip => offset},
         {:$limit => limit}
       ])
     elsif !sort.nil? and limit.nil?
       Place.collection.aggregate([
         {:$unwind => '$address_components'},
-        {:$project => { :_id=>1, :address_components=>1, :formatted_address=>1, :geometry => {:geolocation => 1}}},
+        {:$project => {
+          :_id=>1,
+          :address_components=>1,
+          :formatted_address=>1,
+          :geometry => {
+            :geolocation => 1}}},
         {:$sort => sort},
         {:$skip => offset}
       ])
     else
       Place.collection.aggregate([
         {:$unwind => '$address_components'},
-        {:$project=>{ :_id=>1, :address_components=>1, :formatted_address=>1, :geometry => {:geolocation => 1}}},
+        {:$project=>{
+          :_id=>1,
+          :address_components=>1,
+          :formatted_address=>1,
+          :geometry => {
+            :geolocation => 1}}},
         {:$sort => sort},
         {:$skip => offset},
         {:$limit => limit}

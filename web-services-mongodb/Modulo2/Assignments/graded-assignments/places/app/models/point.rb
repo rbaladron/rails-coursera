@@ -12,6 +12,7 @@ class Point
     end
   end
 
+  # produces a GeoJSON Point hash
   def to_hash
     {:type=>"Point",:coordinates=>[@longitude, @latitude]} #GeoJSON Point format
   end
