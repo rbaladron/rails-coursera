@@ -102,7 +102,9 @@ class Photo
    end
   end
 
-
+  # return the _id of the document  within the places collection.
+  # This place document must be within a specified distance threshold of where the
+  # photo was taken.
   def find_nearest_place_id(max_meters)
     Place.collection.find(
       {'geometry.geolocation':
