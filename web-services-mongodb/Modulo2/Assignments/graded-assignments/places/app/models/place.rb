@@ -40,10 +40,11 @@ class Place
   def self.find_by_short_name(input_string)
     Place.collection.find({"address_components.short_name": input_string})
   end
-
-  def self.to_places ms
+  # accept a Mongo::Collection::View and return a
+  # collection of Place instances.
+  def self.to_places input_mongo
     p = []
-    ms.each { |m|
+    input_mongo.each { |m|
       p << Place.new(m)
     }
     return p
