@@ -219,6 +219,8 @@ class Place
     return near_points
   end
 
+  # This method will return a collection of
+  # Photos that have been associated with the place.
   def photos(offset=0, limit=0)
     self.class.mongo_client.database.fs.find(
       "metadata.place": BSON::ObjectId.from_string(@id)
