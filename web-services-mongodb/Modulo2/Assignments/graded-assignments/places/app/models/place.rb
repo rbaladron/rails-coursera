@@ -75,6 +75,8 @@ class Place
     }
   end
 
+  # delete the document associtiated
+  # with its assigned id.
   def destroy
     self.class.collection.find(:_id => BSON::ObjectId.from_string(@id)).delete_one
   end
