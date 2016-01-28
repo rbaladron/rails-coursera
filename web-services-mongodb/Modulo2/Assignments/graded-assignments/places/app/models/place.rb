@@ -15,26 +15,30 @@ class Place
       address_components.each { |a| @address_components << AddressComponent.new(a) }
     end
 
-
-
-
   end
-
+  # returns a MongoDB Client from Mongoid referencing the
+  # default database from the config/mongoid.yml file
   def self.mongo_client
     Mongoid::Clients.default
   end
 
+  # returns a reference to the places collection
   def self.collection
     self.mongo_client[:places]
   end
 
+  # will bulk load a JSON document with places information into
+  # the places collection.
   def self.load_all(file_json)
     hash_file = JSON.parse(file_json.read)
     collection.insert_many(hash_file)
   end
 
-  def self.find_by_short_name(s)
-    Place.collection.find({"address_components.short_name": s})
+  # that will return a Mongo::Collection::View with a
+  # query to match documents with a matching short_name within
+  # address_components
+  def self.find_by_short_name(input_string)
+    Place.collection.find({"address_components.short_name": input_string})
   end
 
   def self.to_places ms
