@@ -179,17 +179,18 @@ class Place
     Place.collection.indexes.drop_one('geometry.geolocation_2dsphere')
   end
 
-  def self.near(p, max_meters=nil)
+  # returns instances of places that are closest to provided Point
+  def self.near(input_point, max_meters=nil)
     max_meters = max_meters.to_i if !max_meters.nil?
 
     if !max_meters.nil?
       Place.collection.find(
         {'geometry.geolocation':
-         {'$near': p.to_hash, :$maxDistance => max_meters}})
+         {'$near': input_point.to_hash, :$maxDistance => max_meters}})
     else
       Place.collection.find(
         {'geometry.geolocation':
-         {'$near': p.to_hash}})
+         {'$near': input_point.to_hash}})
     end
   end
 
