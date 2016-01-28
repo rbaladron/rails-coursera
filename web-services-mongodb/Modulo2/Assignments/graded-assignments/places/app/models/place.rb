@@ -3,8 +3,11 @@ require 'json'
 class Place
   attr_accessor :id, :formatted_address, :location, :address_components
 
+# Set the attributes from a has with keys
   def initialize(params)
     @id = params[:_id].to_s
+    @formatted_address = params[:formatted_address]
+    @location = Point.new(params[:geometry][:geolocation])
 
     @address_components = []
     if !params[:address_components].nil?
@@ -13,8 +16,8 @@ class Place
     end
 
 
-    @formatted_address = params[:formatted_address]
-    @location = Point.new(params[:geometry][:geolocation])
+
+
   end
 
   def self.mongo_client
