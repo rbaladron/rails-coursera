@@ -167,11 +167,14 @@ class Place
     ]).map {|h| h[:_id].to_s}
   end
 
+  # must make sure the 2dsphere index is in place for the
+  # geometry.geolocation property
   def self.create_indexes
     Place.collection.indexes.
       create_one({'geometry.geolocation': Mongo::Index::GEO2DSPHERE})
   end
 
+  # must make sure the 2dsphere index is removed from the collection
   def self.remove_indexes
     Place.collection.indexes.drop_one('geometry.geolocation_2dsphere')
   end
