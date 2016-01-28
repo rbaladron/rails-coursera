@@ -194,6 +194,7 @@ class Place
     end
   end
 
+  # wraps the class method
   def near(max_meters=nil)
     max_meters = max_meters.to_i if !max_meters.nil?
 
