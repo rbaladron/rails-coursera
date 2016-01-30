@@ -1,6 +1,7 @@
 require 'json'
 
 class Place
+  include ActiveModel::Model
   attr_accessor :id, :formatted_address, :location, :address_components
 
 # Set the attributes from a has with keys
@@ -14,8 +15,13 @@ class Place
       address_components = params[:address_components]
       address_components.each { |a| @address_components << AddressComponent.new(a) }
     end
-
   end
+
+  # returns true if the model instance has been saved to the database
+  def persisted?
+    !@id.nil?
+  end
+
   # returns a MongoDB Client from Mongoid referencing the
   # default database from the config/mongoid.yml file
   def self.mongo_client
