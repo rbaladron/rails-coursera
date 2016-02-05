@@ -1,3 +1,10 @@
+# This class handles processing the address format within the ingested JSON data.
+# • provide read/write access to a city field of type String mapped to the document key of city
+# • provide read/write access to a state field of type String mapped to the document key of state
+# • provide read/write access to a location field of type Point mapped to the document key of loc
+# • produce a MongoDB format consistent with the following:
+#     {:city=>"(city)", :state=>"(state)", :loc=>(point)}
+# • gracefully handle nil inputs, initializing internals to nil or returning nil where appropriate
 class Address
   attr_accessor :city, :state, :location
 
@@ -51,5 +58,3 @@ class Address
   end
 
 end
-
-    Status API Training Shop Blog About Pricing

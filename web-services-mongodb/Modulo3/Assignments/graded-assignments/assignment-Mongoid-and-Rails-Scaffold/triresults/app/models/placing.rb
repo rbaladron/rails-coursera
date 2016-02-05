@@ -1,3 +1,9 @@
+# IThis class  handles processing the placing format within the ingested JSON data.
+# • provide read/write access to a name field of type String mapped to the document key of name
+# • provide read/write access to a place field of type Integer mapped to the document key of place
+# • produce a MongoDB format consistent with the following format:
+#   {:name=>"(category name)" :place=>"(ordinal placing)"}
+# • gracefully handle nil inputs, initializing internals to nil or returning nil where appropriate
 class Placing
   attr_accessor :name, :place
 

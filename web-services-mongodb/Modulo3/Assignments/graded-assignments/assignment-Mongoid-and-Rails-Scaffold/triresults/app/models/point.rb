@@ -1,3 +1,11 @@
+# This class handle processing the GeoJSON Point
+# format within the ingested JSON data. This class :
+# • provide read/write access to a longitude field
+# • provide read/write access to a latitude field
+# • produce a MongoDB format consistent with the following:
+#      {:type=>"Point", :coordinates=>[(longitude), (latitude)]}
+# • gracefully handle nil inputs, initializing internals to nil or returning nil
+#  where appropriate
 class Point
   attr_accessor :longitude, :latitude
 
