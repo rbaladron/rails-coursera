@@ -6,6 +6,8 @@ class Event
   field :d, as: :distance, type: Float
   field :u, as: :units, type: String
 
+  embedded_in :parent, polymorphic: true, touch: true
+
   # Returns the length of the course in meters
   def meters
     if self.u == 'meters'

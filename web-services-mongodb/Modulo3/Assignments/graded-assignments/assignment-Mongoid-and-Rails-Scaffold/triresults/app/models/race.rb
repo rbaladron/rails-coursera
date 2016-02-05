@@ -6,4 +6,6 @@ class Race
   field :date, as: :date, type: Date
   field :loc, as: :location, type: Address
 
+  embeds_many :events, class_name: 'Event', order: [:order.asc], as: :parent
+
 end
