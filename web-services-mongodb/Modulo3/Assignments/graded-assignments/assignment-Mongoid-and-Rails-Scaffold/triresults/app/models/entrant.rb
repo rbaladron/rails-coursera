@@ -18,4 +18,5 @@ class Entrant
       self.secs += result.secs
     end
   end
+  
 end
