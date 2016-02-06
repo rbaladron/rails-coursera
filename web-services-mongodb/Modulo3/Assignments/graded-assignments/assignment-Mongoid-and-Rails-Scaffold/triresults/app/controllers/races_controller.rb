@@ -10,6 +10,7 @@ class RacesController < ApplicationController
   # GET /races/1
   # GET /races/1.json
   def show
+    @entrants=Entrant.where(:"race_id"=>@race_id).order(secs: :asc, last_name: :asc, first_name: :asc)
   end
 
   # GET /races/new
