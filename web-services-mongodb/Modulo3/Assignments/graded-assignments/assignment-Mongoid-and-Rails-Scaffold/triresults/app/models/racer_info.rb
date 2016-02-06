@@ -16,4 +16,17 @@ class RacerInfo
    validates_presence_of :birth_year
    validates :gender, :inclusion=> { :in => ['M', 'F'] }
    validates :birth_year, :numericality => { :less_than => Date.current.year }
+
+   ["city", "state"].each do |action|
+     define_method("#{action}") do
+        self.residence ? self.residence.send("#{action}") : nil
+      end
+
+     define_method("#{action}=") do |name|
+       object=self.residence ||= Address.new
+       object.send("#{action}=", name)
+       self.residence=object
+     end
+   end
+
 end

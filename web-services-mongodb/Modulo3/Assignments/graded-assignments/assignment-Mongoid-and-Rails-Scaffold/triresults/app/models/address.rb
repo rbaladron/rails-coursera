@@ -8,22 +8,26 @@
 class Address
   attr_accessor :city, :state, :location
 
-  def initialize(city, state, loc)
+  def initialize(city=nil, state=nil, loc=nil)
     @city = city
     @state = state
-    @location = Point.new(loc[:coordinates][0], loc[:coordinates][1])
+    #@location = Point.new(loc[:coordinates][0], loc[:coordinates][1])
+    @location = loc
   end
 
   #creates a DB-form of the instance
+  #def mongoize
+  #  {
+  #    :city => @city, :state => @state,
+  #    :loc => {
+  #      :type => 'Point', :coordinates => [
+  #        @location.longitude, @location.latitude
+  #      ]
+  #    }
+  #  }
+  # end
   def mongoize
-    {
-      :city => @city, :state => @state,
-      :loc => {
-        :type => 'Point', :coordinates => [
-          @location.longitude, @location.latitude
-        ]
-      }
-    }
+    return {:city=>@city,:state=>@state,:loc=>Point.mongoize(@location)}
   end
 
   def self.demongoize(object)
