@@ -9,5 +9,10 @@ class Race
   scope :past, -> { where(:date.lt => Date.current)}
 
   embeds_many :events, class_name: 'Event', order: [:order.asc], as: :parent
+  has_many :entrants, foreign_key: "race._id", dependent: :delete, order: [:secs.asc, :bib.asc]
+
+  before_upsert do |doc|
+    doc.set_updated_at
+  end
 
 end

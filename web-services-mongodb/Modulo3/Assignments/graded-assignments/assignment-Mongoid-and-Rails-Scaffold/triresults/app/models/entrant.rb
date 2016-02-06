@@ -12,6 +12,10 @@ class Entrant
   embeds_many :results, class_name: 'LegResult', order: [:"event.o".asc], after_add: :update_total
   embeds_one :race, class_name: 'RaceRef'
 
+  def the_race
+    self.race.race
+  end
+
   def update_total(result)
     if self.secs.nil?
       self.secs = result.secs
