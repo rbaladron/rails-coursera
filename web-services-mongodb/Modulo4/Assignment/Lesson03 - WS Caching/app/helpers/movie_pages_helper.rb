@@ -1,0 +1,2 @@
+module MoviePagesHelper
+end

@@ -1,0 +1,12 @@
+<% if user_signed_in? %>
+    <h2>Logged In As: <%= current_user.email %></h2>
+    <ul>
+      <li><%= link_to 'Log out', destroy_user_session_path, method: :delete %></li>
+      <li><%= link_to 'Profile', edit_user_registration_path %></li>
+<% else %>
+    <h2>Welcome!</h2>
+    <ul>
+      <li><%= link_to 'Log In', new_user_session_path %></li>
+      <li><%= link_to 'Sign Up', new_user_registration_path %></li>
+<% end %>
+</ul>
