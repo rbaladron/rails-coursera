@@ -23,8 +23,7 @@ class Point
     case object
     when Hash then
       Point.new(object[:coordinates][0], object[:coordinates][1])
-    when nil
-      nil
+    else nil
     end
   end
 
