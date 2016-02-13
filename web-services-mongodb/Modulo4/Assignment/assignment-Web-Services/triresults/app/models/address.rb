@@ -1,58 +1,40 @@
 class Address
+  #include Mongoid::Document
   attr_accessor :city, :state, :location
 
-  def initialize(city=nil, state=nil, loc=nil)
+  def initialize city=nil, state=nil, location=nil
     @city = city
     @state = state
-    if loc.nil?
-      @location = Point.new(0.0, 0.0)
-    else
-      @location = Point.new(loc[:coordinates][0], loc[:coordinates][1])
-    end
+    @location = Point.new(location[:coordinates][0], location[:coordinates][1]) if location && location[:coordinates]
   end
 
-  #creates a DB-form of the instance
   def mongoize
-    {
-      :city => @city, :state => @state, 
-      :loc => {
-        :type => 'Point', :coordinates => [
-          @location.longitude, @location.latitude
-        ]
-      }
-    }
-  end
-  
-  def self.demongoize(object)
-    case object
-    when Hash then 
-      Address.new(object[:city], object[:state], object[:loc])
-    when nil 
-      nil 
-    end 
+    {:city=>@city, :state=>@state, :loc=>@location.mongoize}
   end
 
-  #takes in all forms of the object and produces a DB-friendly form
-  def self.mongoize(object) 
+  def self.mongoize(object)
     case object
-    when Address then 
-      object.mongoize
-    when Hash then 
-      #if object[:type] #in GeoJSON Point format
-      Address.new(object[:city], object[:state], object[:loc]).mongoize
-      #else       #in legacy format
-      #    Point.new(object[:lng], object[:lat]).mongoize
-      #end
-    else object
+      when Address then object.mongoize
+      when Hash then
+        Address.new(object[:city], object[:state], object[:loc]).mongoize
+      when nil then nil
     end
   end
 
-  #used by criteria to convert object to DB-friendly form
-  def self.evolve(object)
+  def self.demongoize object
     case object
-    when Address then object.mongoize
-    else object
-    end 
-  end 
+      when nil then nil
+      when Hash then
+        Address.new(object[:city], object[:state], object[:loc])
+      when Address then object
+    end
+  end
 
+  def self.evolve object
+    case object
+      when nil then nil
+      when Hash then object
+      when Address then object.mongoize
+    end
+  end
 end

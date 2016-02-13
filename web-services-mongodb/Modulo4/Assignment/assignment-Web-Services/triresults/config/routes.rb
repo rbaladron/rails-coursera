@@ -2,6 +2,35 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
+  # resources :racers do
+  #   post "entries" => "racers#create_entry"
+  # end
+  # resources :races
+  #
+  #
+  # namespace :api, defaults: {format: 'json'} do
+  #   resources :races, only: [:index, :show, :create, :update, :destroy] do
+  #     resources :results, only: [:index, :show, :update]
+  #   end
+  #
+  #   resources :racers, only: [:index, :show, :create, :update, :destroy] do
+  #     resources :entries, only: [:index, :show, :update]
+  #   end
+  # end
+
+  namespace :api do
+    resources :races do
+      resources :results
+    end
+    resources :racers do
+      resources :entries
+    end
+  end
+
+
+
+
+
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
@@ -13,19 +42,6 @@ Rails.application.routes.draw do
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-  #resources :racers do
-  #  post "entries" => "racers#create_entry"
-  #end
-  #resources :races
-  namespace :api do
-    resources :races do
-      resources :results
-    end
-
-    resources :racers do
-      resources :entries
-    end
-  end
 
   # Example resource route with options:
   #   resources :products do

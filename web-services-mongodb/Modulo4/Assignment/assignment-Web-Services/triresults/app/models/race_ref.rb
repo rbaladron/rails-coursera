@@ -5,5 +5,4 @@ class RaceRef
 
   embedded_in :entrant
   belongs_to :race, foreign_key: "_id"
-
 end
